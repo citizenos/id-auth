@@ -1,0 +1,26 @@
+{
+  "api": {
+    "key": "ZWeCMMQSoIpOnavNnEo2daBjXbmG3PoEWgNnQ13EtZ9jF43gkInxok5fIioX",
+    "cors": {
+      "origin": [
+        "dev\\.citizenos\\.com(:[0-9]{2,4})?$"
+      ]
+    }
+  },
+  "services": {
+    "digiDoc": {
+      "serviceWsdlUrl": "https://tsp.demo.sk.ee/dds.wsdl",
+      "serviceName": "Testimine"
+    }
+  },
+  "logging": {
+    "log4js": {
+      "appenders": [
+        {
+          "type": "console",
+          "category": "development"
+        }
+      ]
+    }
+  }
+}

@@ -1,0 +1,27 @@
+{
+  "name": "id-auth",
+  "version": "0.0.1",
+  "license": "Apache-2.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www",
+    "test": "NODE_ENV=test mocha --expose-gc --async-only --check-leaks --reporter spec --no-exit --ui tdd test/api/** test/libs/**",
+    "eslint": "./node_modules/.bin/eslint --quiet **/*.js"
+  },
+  "dependencies": {
+    "bluebird": "3.3.5",
+    "body-parser": "1.13.2",
+    "config": "1.20.1",
+    "cors": "2.7.1",
+    "express": "4.13.1",
+    "log4js": "0.6.35",
+    "soap": "0.14.0"
+  },
+  "devDependencies": {
+    "chai": "3.5.0",
+    "eslint": "4.15.0",
+    "mocha": "2.4.5",
+    "supertest": "1.2.0",
+    "supertest-as-promised": "3.1.0"
+  }
+}

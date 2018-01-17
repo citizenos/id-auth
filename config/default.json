@@ -1,0 +1,40 @@
+{
+  "api": {
+    "key": null,
+    "cors": {
+      "origin": [
+        "citizenos\\.com(:[0-9]{2,4})?$",
+        "citizenos-citizenos-web-test\\.herokuapp\\.com$",
+        "dev\\.citizenos\\.com(:[0-9]{2,4})?$"
+      ],
+      "methods": [
+        "GET",
+        "PUT",
+        "POST",
+        "DELETE"
+      ],
+      "credentials": true
+    }
+  },
+  "services": {
+    "digiDoc": {
+      "serviceWsdlUrl": "https://digidocservice.sk.ee/?wsdl",
+      "serviceName": "CitizenOS"
+    }
+  },
+  "logging": {
+    "log4js": {
+      "levels": {
+        "development": "DEBUG",
+        "test": "DEBUG",
+        "production": "INFO"
+      },
+      "appenders": [
+        {
+          "type": "console",
+          "category": "production"
+        }
+      ]
+    }
+  }
+}
