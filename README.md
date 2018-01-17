@@ -1,5 +1,3 @@
-[TOC]
-
 # ID-Auth
 
 Service for authenticating with Estonian ID-card (https://www.id.ee/index.php?id=30470)
