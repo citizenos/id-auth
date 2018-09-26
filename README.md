@@ -4,7 +4,7 @@ Service for authenticating with Estonian ID-card (https://www.id.ee/index.php?id
 
 API contains only 2 endpoints:
 
-* `GET /authorize` - called with client certificate in HTTP `x-ssl-client-cert` request header and get a **token** in return. See "How it works?" for details.
+* `GET|POST /authorize` - called with client certificate in HTTP `x-ssl-client-cert` request header and get a **token** in return. See "How it works?" for details.
 * `GET /info?token=:token` - with **token** and `x-api-key` for authentication to get certificate info. See "How it works?" for details.
 
 ## How it works?
