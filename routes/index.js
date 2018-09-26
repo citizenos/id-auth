@@ -62,6 +62,10 @@ module.exports = function (app) {
      * Authorize
      *
      * Returns token that will be used to get authorized user data
+     * GET support due to the fact that FF does not send credentials for preflight requests.
+     *
+     * @see https://bugs.chromium.org/p/chromium/issues/detail?id=775438
+     * @see https://bugzilla.mozilla.org/show_bug.cgi?id=1019603
      */
     app.get('/authorize', authorize);
     app.post('/authorize', authorize);
