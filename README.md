@@ -46,6 +46,11 @@ server {
 
     location /authorize {
         expires -1;
+        
+        if ($ssl_client_verify != SUCCESS) { 
+            return 403; 
+        }
+        
         proxy_pass http://localhost:3080;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
