@@ -15,7 +15,7 @@ suite('API', function () {
             var cert = fs.readFileSync('./test/resources/certificates/dds_good_igor_sign.pem', {encoding: 'utf8'}).replace(/\n/g, ''); //eslint-disable-line no-sync
 
             agent
-                .get('/authorize')
+                .post('/authorize')
                 .set('X-SSL-CLIENT-CERT', cert)
                 .expect(200)
                 .then(function (res) {

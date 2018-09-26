@@ -25,7 +25,7 @@ if (app.get('env') === 'development') {
         key: fs.readFileSync('./config/certs/dev.id.citizenos.com.key'),
         cert: fs.readFileSync('./config/certs/dev.id.citizenos.com.crt')
     };
-    var serverHttps = https.createServer(options, app).listen(process.env.PORT_SSL || 3443, host, function () {
+    var serverHttps = https.createServer(options, app).listen(process.env.PORT_SSL || 3002, host, function () {
         logger.info('Express HTTPS server listening on port ' + serverHttps.address().port);
     });
 }

@@ -10,12 +10,7 @@ module.exports = function (app) {
     // TODO: Replace with persistent storage, otherwise everything is lost after server restart.
     var memoryStorage = {};
 
-    /**
-     * Authorize
-     *
-     * Returns token that will be used to get authorized user data
-     */
-    app.get('/authorize', function (req, res, next) {
+    var authorize = function (req, res, next) {
         logger.debug('Authorize', req.method, req.path, req.headers);
 
         var clientCert = req.headers['x-ssl-client-cert'];
@@ -61,7 +56,15 @@ module.exports = function (app) {
                 return res.ok({token: token});
             })
             .catch(next);
-    });
+    };
+
+    /**
+     * Authorize
+     *
+     * Returns token that will be used to get authorized user data
+     */
+    app.get('/authorize', authorize);
+    app.post('/authorize', authorize);
 
 
     /**
