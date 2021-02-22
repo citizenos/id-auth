@@ -10,10 +10,10 @@
  * @returns {void}
  */
 module.exports = function (req, res, next) {
-    var app = req.app;
-    var config = app.get('config');
-    var logger = app.get('logger');
-    var apiKey = req.headers['x-api-key'];
+    const app = req.app;
+    const config = app.get('config');
+    const logger = app.get('logger');
+    const apiKey = req.headers['x-api-key'];
 
     if (!config.api || !config.api.key) {
         logger.error('API key access not configured!', req.method, req.path);

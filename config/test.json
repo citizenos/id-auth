@@ -7,12 +7,6 @@
       ]
     }
   },
-  "services": {
-    "digiDoc": {
-      "serviceWsdlUrl": "https://tsp.demo.sk.ee/dds.wsdl",
-      "serviceName": "Testimine"
-    }
-  },
   "logging": {
     "log4js": {
       "appenders": [

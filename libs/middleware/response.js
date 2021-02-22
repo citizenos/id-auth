@@ -1,6 +1,6 @@
 'use strict';
 
-var Response = require('../models/Response');
+const Response = require('../models/Response');
 
 /**
  * Simplifed JSON response middleware
@@ -17,9 +17,9 @@ var Response = require('../models/Response');
  */
 module.exports = function (req, res, next) {
 
-    var buildJsonResponse = function (httpCode, defaultMessage) {
+    const buildJsonResponse = function (httpCode, defaultMessage) {
         return function (statusMessage, statusCode, data) {
-            var response;
+            let response;
 
             if (defaultMessage && !statusMessage) {
                 statusMessage = defaultMessage;

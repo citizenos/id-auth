@@ -4,10 +4,10 @@
  * Utils
  */
 
-var emailToDisplayName = function (email) {
+const emailToDisplayName = function (email) {
     if (!email || !email.indexOf('@') || email.indexOf('@') < 1) return null;
 
-    var displayName = '';
+    let displayName = '';
 
     email.split('@')[0].split(/[._-]/).forEach(function (val) {
         displayName += val.charAt(0).toUpperCase() + val.substr(1) + ' ';
@@ -16,8 +16,8 @@ var emailToDisplayName = function (email) {
     return displayName.trim();
 };
 
-var escapeHtml = function (text) {
-    var map = {
+const escapeHtml = function (text) {
+    const map = {
         '&': '&amp;',
         '<': '&lt;',
         '>': '&gt;',
@@ -37,12 +37,12 @@ var escapeHtml = function (text) {
  *
  * @return {string} Random string
  */
-var randomString = function (length) {
-    var charArr = [];
-    var possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+const randomString = function (length) {
+    const charArr = [];
+    const possible = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
     length = length ? length : 8;
 
-    for (var i = 0; i < length; i++) {
+    for (let i = 0; i < length; i++) {
         charArr.push(possible.charAt(Math.floor(Math.random() * possible.length))); // Not using string+= as it becomes inefficient for long strings.
     }
 
@@ -57,7 +57,7 @@ var randomString = function (length) {
  *
  * @returns {number} Random number
  */
-var randomNumber = function (min, max) {
+const randomNumber = function (min, max) {
     return Math.floor(Math.random() * (max - min + 1) + min);
 };
 
@@ -69,12 +69,12 @@ var randomNumber = function (min, max) {
  * @returns {string} PID
  *
  */
-var randomPid = function () {
-    var sex = randomNumber(1, 6); // Odd - male, even - female
-    var year = ('00' + randomNumber(0, 99)).slice(-2);
-    var month = ('00' + randomNumber(1, 12)).slice(-2);
-    var day = ('00' + randomNumber(1, 28)).slice(-2);
-    var uniq = randomNumber(1000, 9999);
+const randomPid = function () {
+    const sex = randomNumber(1, 6); // Odd - male, even - female
+    const year = ('00' + randomNumber(0, 99)).slice(-2);
+    const month = ('00' + randomNumber(1, 12)).slice(-2);
+    const day = ('00' + randomNumber(1, 28)).slice(-2);
+    const uniq = randomNumber(1000, 9999);
 
     return sex + year + month + day + uniq;
 };
@@ -88,7 +88,7 @@ var randomPid = function () {
  *
  * @private
  */
-var streamToPromise = function (stream) {
+const streamToPromise = function (stream) {
     return new Promise(function (resolve, reject) {
         stream.on('end', resolve); // Readable stream has "end"
         stream.on('finish', resolve); // Writable stream has "finish"
@@ -105,13 +105,13 @@ var streamToPromise = function (stream) {
  *
  * @private
  */
-var streamToBuffer = function (readableStream) {
+const streamToBuffer = function (readableStream) {
     return new Promise(function (resolve, reject) {
-        var buf;
+        let buf;
 
         readableStream.on('data', function (d) {
             if (typeof d === 'string') { // Mu2 streams send mixed Buffers and Strings as data event parameter
-                d = new Buffer(d);
+                d = Buffer.from(d, 'utf-8');
             }
             if (!buf) {
                 buf = d;
@@ -138,11 +138,10 @@ var streamToBuffer = function (readableStream) {
  *
  * @private
  */
-var streamToString = function (readableStream) {
-    return streamToBuffer(readableStream)
-        .then(function (buffer) {
-            return buffer.toString();
-        });
+const streamToString = async function (readableStream) {
+    const buffer = await streamToBuffer(readableStream);
+
+    return buffer.toString();
 };
 
 module.exports.emailToDisplayName = emailToDisplayName;

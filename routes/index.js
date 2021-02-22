@@ -1,72 +1,56 @@
 'use strict';
 
 module.exports = function (app) {
-    var config = app.get('config');
-    var logger = app.get('logger');
-    var DigiDocServiceClient = app.get('ddsClient');
-    var util = app.get('util');
-    var authApiKey = app.get('middleware.authApiKey');
+    const config = app.get('config');
+    const logger = app.get('logger');
+    const util = app.get('util');
+    const authApiKey = app.get('middleware.authApiKey');
+    const mobileId = require('mobiil-id-rest')();
 
+    mobileId.init({
+        issuers: config.certificates.issuers
+    });
     // TODO: Replace with persistent storage, otherwise everything is lost after server restart.
-    var memoryStorage = {};
+    const memoryStorage = {};
 
-    var authorize = function (req, res, next) {
+    /**
+     * Authorize
+     *
+     * Returns token that will be used to get authorized user data
+     */
+
+    const authorize = async function (req, res, next) {
         logger.debug('Authorize', req.method, req.path, req.headers);
 
-        var clientCert = req.headers['x-ssl-client-cert'];
+        let clientCert = req.headers['x-ssl-client-cert'];
         if (!clientCert) {
             logger.warn('Missing client certificate!', req.path, req.headers);
 
             return res.badRequest('Missing client certificate');
         }
 
-        var ddsClient = new DigiDocServiceClient(config.services.digiDoc.serviceWsdlUrl, config.services.digiDoc.serviceName, config.services.digiDoc.token);
-        ddsClient
-            .checkCertificate(clientCert, false)
-            .spread(function (checkCertificateResult) {
-                var data = {
-                    status: checkCertificateResult.Status.$value
-                };
+        if(clientCert.indexOf('-----BEGIN') > -1) {
+            clientCert = clientCert.replace('-----BEGIN CERTIFICATE-----', '').replace('-----END CERTIFICATE-----', '')
+        }
+        try {
+            await mobileId.validateCert(clientCert, 'base64');
+            let personalInfo = await mobileId.getCertUserData(clientCert, 'base64');
+            personalInfo.countryCode = personalInfo.country;
+            delete personalInfo.country;
+            const token = util.randomString(16);
+            memoryStorage[token] = {user: personalInfo};
 
-                switch (data.status) { // GOOD, UNKNOWN, EXPIRED, SUSPENDED
-                    case 'GOOD':
-                        data.user = {
-                            pid: checkCertificateResult.UserIDCode.$value,
-                            firstName: checkCertificateResult.UserGivenname.$value,
-                            lastName: checkCertificateResult.UserSurname.$value,
-                            countryCode: checkCertificateResult.UserCountry.$value // UPPERCASE ISO-2 letter
-                        };
-                        break;
-                    case 'SUSPENDED':
-                    case 'EXPIRED':
-                    case 'UNKNOWN':
-                        // Not giving User data for such cases - you're not supposed to use it anyway
-                        logger.warn('Invalid certificate status', data.status);
-                        break;
-                    default:
-                        logger.error('Unexpected certificate status from DDS', data.status);
-                        res.internalServerError();
+            return res.ok({token});
 
-                        return Promise.reject();
-                }
+        } catch (error) {
+            if (error.name === 'ValidationError') {
+                return res.badRequest(error.message);
+            }
 
-                var token = util.randomString(16);
-                memoryStorage[token] = data;
+            return next(error);
+        }
+    }
 
-                return res.ok({token: token});
-            })
-            .catch(next);
-    };
-
-    /**
-     * Authorize
-     *
-     * Returns token that will be used to get authorized user data
-     * GET support due to the fact that FF does not send credentials for preflight requests.
-     *
-     * @see https://bugs.chromium.org/p/chromium/issues/detail?id=775438
-     * @see https://bugzilla.mozilla.org/show_bug.cgi?id=1019603
-     */
     app.get('/authorize', authorize);
     app.post('/authorize', authorize);
 
@@ -79,7 +63,7 @@ module.exports = function (app) {
     app.get('/info', authApiKey, function (req, res) {
         logger.debug('Info', req.method, req.path, req.headers, req.query);
 
-        var token = req.query.token;
+        const token = req.query.token;
 
         if (!token) {
             logger.warn('Missing required parameter "token"', req.path, req.headers);
@@ -87,7 +71,7 @@ module.exports = function (app) {
             return res.badRequest('Missing required parameter "token"', 1);
         }
 
-        var data = memoryStorage[token];
+        const data = memoryStorage[token];
 
         if (!data) {
             logger.warn('No data found for specific token!', req.path, req.headers);

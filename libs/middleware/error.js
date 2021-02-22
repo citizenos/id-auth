@@ -14,7 +14,7 @@
  */
 module.exports = function (err, req, res, next) { // eslint-disable-line no-unused-vars
 
-    var logger = req.app.get('logger') || console;
+    const logger = req.app.get('logger') || console;
 
     logger.error(
         'Endpoint'
@@ -26,8 +26,8 @@ module.exports = function (err, req, res, next) { // eslint-disable-line no-unus
     );
 
 
-    var status = 500;
-    var message = 'Internal Server Error';
+    const status = 500;
+    const message = 'Internal Server Error';
 
     if (req.accepts('json')) {
         return res.status(status).json({

@@ -9,9 +9,9 @@ API contains only 2 endpoints:
 
 ## How it works?
 
-* Application calls `GET /authorize` endpoint via a proxy (Nginx, HAProxy..) that will do the client certificate auth and passes the certificate on to the endpoint in HTTP `x-ssl-client-cert` header. 
-* Endpoint calls DigiDocService (DDS) `CheckCertificate` method (http://sk-eid.github.io/dds-documentation/api/api_docs/#checkcertificate), stores the result in memory and returns a **token** for the data.
-* Application calls `GET /info` with the issued **token** and `x-api-key` to get the DDS service response.
+* Application calls `GET /authorize` endpoint via a proxy (Nginx, HAProxy..) that will do the client certificate auth and passes the certificate on to the endpoint in HTTP `x-ssl-client-cert` header.
+* Endpoint validates the certificate, stores the result in memory and returns a **token** for the data.
+* Application calls `GET /info` with the issued **token** and `x-api-key` to get the data.
 
 ## Who would need a service like that?
 
@@ -28,7 +28,7 @@ Example client certificate auth Nginx configuration:
 server {
     listen 443;
     server_name id.citizenos.com;
-    
+
     access_log /var/log/nginx/id-auth.access.log;
     error_log /var/log/nginx/id-auth.error.log;
 
@@ -63,7 +63,7 @@ server {
 server {
     listen 8443;
     server_name id.citizenos.com;
-    
+
     access_log /var/log/nginx/id-auth.access.log;
     error_log /var/log/nginx/id-auth.error.log;
 
@@ -102,4 +102,4 @@ server {
 
 ## Credits
 
-* [CitizenOS](https://citizenos.com) for funding the development 
+* [CitizenOS](https://citizenos.com) for funding the development
