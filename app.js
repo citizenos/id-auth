@@ -26,9 +26,27 @@ app.set('middleware.authApiKey', require('./libs/middleware/authApiKey'));
 
 // CORS
 const corsOptions = config.api.cors;
+const whitelist = [];
+
 corsOptions.origin.forEach(function (pattern, i) {
-    corsOptions.origin[i] = new RegExp(pattern, 'i');
+    whitelist.push(new RegExp(pattern, 'i'));
 });
+
+corsOptions.origin = function (origin, callback) {
+    let match = false;
+    whitelist.forEach((value) => {
+        if (value.test(origin)) {
+            match = true;
+        }
+    })
+    if (match || !origin) {
+        callback(null, true)
+    } else {
+        callback(new Error('Not allowed by CORS'))
+    }
+}
+
+
 const corsMiddleware = cors(corsOptions);
 app.use(corsMiddleware); // CORS
 app.options('*', corsMiddleware); // Enable CORS preflight - https://github.com/expressjs/cors#enabling-cors-pre-flight
