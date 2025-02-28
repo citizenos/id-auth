@@ -3,6 +3,7 @@
     "key": null,
     "cors": {
       "origin": [
+        "app\\.citizenos\\.com(:[0-9]{2,4})?$",
         "citizenos\\.com(:[0-9]{2,4})?$",
         "citizenos-citizenos-web-test\\.herokuapp\\.com$",
         "dev\\.citizenos\\.com(:[0-9]{2,4})?$"
